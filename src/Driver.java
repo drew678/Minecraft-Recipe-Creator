@@ -1,13 +1,66 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Driver {
 	static ArrayList<Product> lOP;
 	static ArrayList<Material> lOM;
+	static String recipeName;
 	
 	public static void main(String args[]) {
 		lOM = new ArrayList<Material>();
 		lOP = new ArrayList<Product>();
+		recipeName = null;
+		
+		initializerGuidance();
+		
+		creater(recipeName, 0, 1);
+		
+		for (Material material : lOM) {
+			System.out.println(material.getAmmount() + " " + material.getName());
+		}
+	}
+	
+	public static void creater(String name, int depth, double mult) {
+		for (int i = 0; i < depth; i++) {
+			System.out.print("\t"); //prints tabs at depth
+		}
+		System.out.println(mult + " " + name);
+		boolean pNotFound = true;
+		for (Product product : lOP) {
+			if(product.getName().equals(name)) {
+				pNotFound = false;
+				for (Material material : product.getList()) {
+					creater(material.getName(), depth+1, material.getAmmount()*mult);
+				}
+			}
+		}
+		if(pNotFound || name.equals("liquid logic")) {
+			boolean mNotFound = true;
+			for (Material material : lOM) {
+				if(material.getName().equals(name)) {
+					mNotFound = false;
+					material.setAmmount(material.getAmmount()+mult);
+				}
+			}
+			if(mNotFound) {
+				lOM.add(new Material(name,mult));
+			}
+		}
+	}
+	public static void initializerTest() {
+		recipeName = "firework";
+		
+		ArrayList<Material> list = new ArrayList<Material>();
+		list.add(new Material("paper",1));
+		list.add(new Material("gunpowder",3));
+		lOP.add(new Product("firework",list));
+		
+		list = new ArrayList<Material>();
+		list.add(new Material("sugercane",1));
+		lOP.add(new Product("paper",list));
+		
+	}
+	public static void initializerGuidance() {
+		recipeName = "guidance";
 		
 		ArrayList<Material> list = new ArrayList<Material>();
 		list.add(new Material("matter plastics",14));
@@ -384,39 +437,5 @@ public class Driver {
 		p = new Product("lead plate", list);
 		lOP.add(p);
 		
-		String name = "guidance";
-		creater(name, 0, 1);
-		
-		for (Material material : lOM) {
-			System.out.println(material.getAmmount() + " " + material.getName());
-		}
-	}
-	
-	public static void creater(String name, int depth, double mult) {
-		for (int i = 0; i < depth; i++) {
-			System.out.print("\t");
-		}
-		System.out.println(mult + " " + name);
-		boolean pNotFound = true;
-		for (Product product : lOP) {
-			if(product.getName().equals(name)) {
-				pNotFound = false;
-				for (Material material : product.getList()) {
-					creater(material.getName(), depth+1, material.getAmmount()*mult);
-				}
-			}
-		}
-		if(pNotFound || name.equals("liquid logic")) {
-			boolean mNotFound = true;
-			for (Material material : lOM) {
-				if(material.getName().equals(name)) {
-					mNotFound = false;
-					material.setAmmount(material.getAmmount()+mult);
-				}
-			}
-			if(mNotFound) {
-				lOM.add(new Material(name,mult));
-			}
-		}
 	}
 }
